@@ -1,7 +1,5 @@
-# Buckshot Roulette macOS Website Frontend
+# Buckshot Roulette macOS Website
 
-Built with Svelte & SvelteKit
+Frontend: [./frontend](./frontend/)
 
-## License
-
-[MIT](./LICENSE)
+Backend: [./backend](./backend/)

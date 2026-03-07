@@ -1,4 +1,4 @@
-import Elysia, { t, type ElysiaConfig } from 'elysia';
+import Elysia, { t } from 'elysia';
 import { JWT_SECRET, PUBLIC_API_URL, PUBLIC_URL } from './env';
 import { fieldsToZodObject } from './utils';
 import z from 'zod';
@@ -7,16 +7,21 @@ import {
 	checkSteamLicense,
 } from './license-check';
 
-export const authCookie: ElysiaConfig<never>['cookie'] = {
+export const authCookie = {
 	secrets: JWT_SECRET,
-	sign: ['profile'],
-	httpOnly: true,
-	maxAge: Math.floor(CACHE_CHECK_TRUE_LIFETIME_MS / 1000),
+	sign: ['license'],
 };
 
-export const authCookieSchema = t.Object({
-	expiresAt: t.Numeric(),
-});
+export const authCookieSchema = t.Cookie(
+	{
+		license: t.Optional(
+			t.Object({
+				expiresAt: t.Numeric(),
+			}),
+		),
+	},
+	authCookie,
+);
 
 export const appAuth = new Elysia({
 	prefix: '/auth',
@@ -29,7 +34,7 @@ export const appAuth = new Elysia({
 		}
 		const redirectUrl = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(
 			returnTo,
-		)}&openid.realm=${PUBLIC_URL}&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select`;
+		)}&openid.realm=${PUBLIC_API_URL}&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select`;
 		return redirect(redirectUrl);
 	})
 	.get(
@@ -140,6 +145,8 @@ export const appAuth = new Elysia({
 					license!.value = {
 						expiresAt: Date.now() + CACHE_CHECK_TRUE_LIFETIME_MS,
 					};
+					license!.httpOnly = true;
+					license!.maxAge = Math.floor(CACHE_CHECK_TRUE_LIFETIME_MS / 1000);
 					return redirect(new URL('/#success', PUBLIC_URL).href);
 				} else if (licenseCheckResult === 'unknown') {
 					return redirect(new URL('/#error-license-unknown', PUBLIC_URL).href);
@@ -156,8 +163,6 @@ export const appAuth = new Elysia({
 			}
 		},
 		{
-			cookie: t.Cookie({
-				license: authCookieSchema,
-			}),
+			cookie: authCookieSchema,
 		},
 	);

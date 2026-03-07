@@ -1,25 +1,16 @@
-import { Elysia, t } from 'elysia';
-import { PUBLIC_API_URL } from './env';
+import { Elysia, redirect } from 'elysia';
+import { PUBLIC_API_URL, PUBLIC_URL } from './env';
 import { appAuth, authCookie, authCookieSchema } from './auth';
 
-const app = new Elysia({
+const appProtected = new Elysia({
 	cookie: authCookie,
 })
-	.onError(({ error, code, set }) => {
-		if (code === 'NOT_FOUND') {
-			set.status = 404;
-			return { ok: false, error: 'Not found' };
-		} else {
-			set.status = 500;
-			console.error(error);
-			return { ok: false, error: 'Internal server error' };
-		}
-	})
 	.use(appAuth)
 	.get(
 		'/download',
 		async ({ cookie: { license }, redirect, set, headers }) => {
 			const token = license!.value;
+			console.log(license.secrets);
 			if (!token || token.expiresAt <= Date.now()) {
 				return redirect(new URL('/auth', PUBLIC_API_URL).href);
 			}
@@ -27,6 +18,10 @@ const app = new Elysia({
 			let file = Bun.file(
 				new URL('../../static/BuckshotRoulette.app', import.meta.url),
 			);
+			if (!(await file.exists())) {
+				set.status = 500;
+				return { ok: false, error: 'Try again later' };
+			}
 
 			const range = headers['range'];
 			let start = 0;
@@ -66,11 +61,28 @@ const app = new Elysia({
 			return file.stream();
 		},
 		{
-			cookie: t.Cookie({
-				license: t.Optional(authCookieSchema),
-			}),
+			cookie: authCookieSchema,
 		},
 	);
+
+const app = new Elysia()
+	.onError(({ error, code, set }) => {
+		if (code === 'NOT_FOUND') {
+			set.status = 404;
+			return { ok: false, error: 'Not found' };
+		} else if (code === 'INVALID_COOKIE_SIGNATURE') {
+			return redirect('/logout');
+		} else {
+			set.status = 500;
+			console.error(error);
+			return { ok: false, error: 'Internal server error' };
+		}
+	})
+	.get('/logout', ({ cookie }) => {
+		cookie.license?.remove();
+		return redirect(new URL('/#try-again', PUBLIC_URL).href);
+	})
+	.use(appProtected);
 
 app.listen(Bun.env.PORT || 3001, ({ hostname, port, protocol }) => {
 	console.log(`Server running on ${protocol}://${hostname}:${port}`);

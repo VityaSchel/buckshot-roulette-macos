@@ -20,7 +20,25 @@ export async function checkSteamLicense({
 	if (cachedResponse && cachedResponse.expiresAt > Date.now()) {
 		return cachedResponse.result;
 	}
+	const result = await fetchSteamLicense({ steamId });
+	if (result !== 'unknown') {
+		const cacheCheckLifetimeMs =
+			result === true
+				? CACHE_CHECK_TRUE_LIFETIME_MS
+				: CACHE_CHECK_FALSE_LIFETIME_MS;
+		licenseCheckCache.set(steamId, {
+			expiresAt: Date.now() + cacheCheckLifetimeMs,
+			result,
+		});
+	}
+	return result;
+}
 
+async function fetchSteamLicense({
+	steamId,
+}: {
+	steamId: string;
+}): Promise<boolean | 'unknown'> {
 	if (!STEAM_API_KEY) throw new Error('Missing Steam API key');
 	const responseSerialized = await fetch(
 		'https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?' +
@@ -46,25 +64,33 @@ export async function checkSteamLicense({
 	try {
 		const response = await z
 			.object({
-				response: z.object({ games: z.array(z.object({ appid: z.number() })) }),
+				response: z
+					.object({ games: z.array(z.object({ appid: z.number() })) })
+					.or(
+						z.object({
+							game_count: z.number(),
+						}),
+					),
 			})
 			.parseAsync(responseDeserialized)
 			.then((data) => data.response);
+
+		if ('game_count' in response) {
+			if (response.game_count === 0) {
+				return false;
+			} else {
+				throw new Error('Unknown response');
+			}
+		}
+
 		const result = response.games.some(
 			(game) => game.appid === BUCKSHOT_ROULETTE_APP_ID,
 		);
 
-		const cacheCheckLifetimeMs =
-			result === true
-				? CACHE_CHECK_TRUE_LIFETIME_MS
-				: CACHE_CHECK_FALSE_LIFETIME_MS;
-		licenseCheckCache.set(steamId, {
-			expiresAt: Date.now() + cacheCheckLifetimeMs,
-			result,
-		});
-
 		return result;
-	} catch {
+	} catch (e) {
+		console.error(e);
+		console.log(responseDeserialized);
 		return 'unknown';
 	}
 }
