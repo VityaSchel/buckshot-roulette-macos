@@ -12,7 +12,7 @@ const appProtected = new Elysia({
 			const token = license!.value;
 			console.log(license.secrets);
 			if (!token || token.expiresAt <= Date.now()) {
-				return redirect(new URL('/auth', PUBLIC_API_URL).href);
+				return redirect(new URL('auth', PUBLIC_API_URL).href);
 			}
 
 			let file = Bun.file(
@@ -83,7 +83,7 @@ const app = new Elysia()
 	})
 	.get('/logout', ({ cookie }) => {
 		cookie.license?.remove();
-		return redirect(new URL('/#try-again', PUBLIC_URL).href);
+		return redirect(new URL('#try-again', PUBLIC_URL).href);
 	})
 	.use(appProtected);
 

@@ -49,7 +49,7 @@
 		downloads. Sharing the build is considered piracy and therefore prohibited.
 		<br />
 		<br />
-		<Button class="block" href={new URL("/download", PUBLIC_API_URL).href}>
+		<Button class="block" href={new URL("download", PUBLIC_API_URL).href}>
 			Download for free (v1.2)
 		</Button>
 		<span class="mt-2 block text-xs leading-4 text-neutral-500">
@@ -84,5 +84,10 @@
 	<p>
 		You have been authorized and can now download the port using the "Download for free" button
 		below. If you experience issues, ensure your browser allows cookies or contact port's author.
+	</p>
+</Alert>
+<Alert id="try-again" title="Please try again">
+	<p>
+		Your Session was invalid so it was deleted. Please click the "Download for free" button again.
 	</p>
 </Alert>

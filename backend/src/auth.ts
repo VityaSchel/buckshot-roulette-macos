@@ -28,7 +28,7 @@ export const appAuth = new Elysia({
 	cookie: authCookie,
 })
 	.get('/', async ({ redirect, query }) => {
-		let returnTo = new URL('/auth/callback', PUBLIC_API_URL).href;
+		let returnTo = new URL('auth/callback', PUBLIC_API_URL).href;
 		if (query.file) {
 			returnTo += '?' + new URLSearchParams({ file: query.file });
 		}
@@ -147,11 +147,11 @@ export const appAuth = new Elysia({
 					};
 					license!.httpOnly = true;
 					license!.maxAge = Math.floor(CACHE_CHECK_TRUE_LIFETIME_MS / 1000);
-					return redirect(new URL('/#success', PUBLIC_URL).href);
+					return redirect(new URL('#success', PUBLIC_URL).href);
 				} else if (licenseCheckResult === 'unknown') {
-					return redirect(new URL('/#error-license-unknown', PUBLIC_URL).href);
+					return redirect(new URL('#error-license-unknown', PUBLIC_URL).href);
 				} else {
-					return redirect(new URL('/#error-no-license', PUBLIC_URL).href);
+					return redirect(new URL('#error-no-license', PUBLIC_URL).href);
 				}
 			} catch (error) {
 				console.error(error);
