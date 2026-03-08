@@ -7,7 +7,6 @@
 	let { children } = $props();
 </script>
 
-<svelte:head><link rel="icon" href="" /></svelte:head>
 <div class="page px-3.75 py-2.5">
 	<header class="flex min-h-8.75 items-center justify-between gap-2">
 		<a href={resolve("/")} class="font-caption text-xl font-bold md:text-2xl"

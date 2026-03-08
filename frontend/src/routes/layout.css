@@ -18,12 +18,15 @@ body {
 	overflow-x: hidden;
 }
 
+body:has(.alert:target) {
+	overflow-y: hidden;
+}
+
 @supports (min-height: 100dvh) {
 	body {
 		min-height: 100dvh;
 	}
 }
-
 
 hr {
 	border-top: 1px dotted white;
@@ -43,4 +46,14 @@ h1 {
 
 .pixelated {
 	image-rendering: pixelated;
+}
+
+@font-face {
+	font-family: "FakeReceipt-Regular";
+	src: url("/fonts/fake-receipt.otf");
+}
+
+@font-face {
+	font-family: "DotMatrix-Regular";
+	src: url("/fonts/dot-matrix.otf");
 }
