@@ -49,7 +49,7 @@
 		downloads. Sharing the build is considered piracy and therefore prohibited.
 		<br />
 		<br />
-		<Button class="block" href={new URL("download", PUBLIC_API_URL).href}>
+		<Button tag="a" class="block" href={new URL("download", PUBLIC_API_URL).href} rel="nofollow">
 			Download for free (v1.2)
 		</Button>
 		<span class="mt-2 block text-xs leading-4 text-neutral-500">

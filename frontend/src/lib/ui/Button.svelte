@@ -1,17 +1,14 @@
-<script lang="ts">
+<script lang="ts" generics="T extends 'button' | 'a'">
 	let {
-		href,
-		children,
-		class: className,
+		tag,
+		...props
 	}: {
-		href?: string;
-		children?: import("svelte").Snippet;
-		class?: import("svelte/elements").ClassValue;
-	} = $props();
+		tag: T;
+	} & import("svelte/elements").SvelteHTMLElements[T] = $props();
 </script>
 
-<svelte:element this={href ? "a" : "button"} {href} class={className}>
-	{@render children?.()}
+<svelte:element this={tag} {...props}>
+	{@render props.children?.()}
 </svelte:element>
 
 <style>
