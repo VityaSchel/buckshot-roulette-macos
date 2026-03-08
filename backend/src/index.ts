@@ -16,7 +16,10 @@ const appProtected = new Elysia({
 			}
 
 			let file = Bun.file(
-				new URL('../../static/BuckshotRoulette.app', import.meta.url),
+				new URL(
+					'../../static/buckshot-roulette-macos-v1.2.zip',
+					import.meta.url,
+				),
 			);
 			if (!(await file.exists())) {
 				set.status = 500;
@@ -52,7 +55,7 @@ const appProtected = new Elysia({
 			// set.headers['Accept-Ranges'] = 'bytes'
 			set.headers['Content-Type'] = 'application/octet-stream';
 			set.headers['Content-Disposition'] =
-				`attachment; filename="BuckshotRoulette.app"`;
+				`attachment; filename="buckshot-roulette-macos-v1.2.zip"`;
 
 			if (range) {
 				file = file.slice(start, end + 1);

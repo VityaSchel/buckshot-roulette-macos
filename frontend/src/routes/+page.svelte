@@ -10,6 +10,7 @@
 
 <svelte:head>
 	<title>Buckshot Roulette for Mac</title>
+	<meta property="og:title" content="Buckshot Roulette for Mac" />
 </svelte:head>
 <h1 class="text-lg md:text-xl">Download Buckshot Roulette for macOS</h1>
 <p class="mt-4">
@@ -49,7 +50,7 @@
 		<br />
 		<br />
 		<Button class="block" href={new URL("/download", PUBLIC_API_URL).href}>
-			Download for free
+			Download for free (v1.2)
 		</Button>
 		<span class="mt-2 block text-xs leading-4 text-neutral-500">
 			You must have BUCKSHOT ROULETTE purchased in Steam

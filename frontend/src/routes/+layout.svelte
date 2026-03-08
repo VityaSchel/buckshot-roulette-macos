@@ -3,15 +3,26 @@
 	import "@fontsource-variable/roboto-mono";
 	import logo from "$lib/assets/logo.avif";
 	import { resolve } from "$app/paths";
+	import { page } from "$app/state";
+
+	const description =
+		"Buckshot Roulette macOS port project: run Buckshot Roulette natively on Apple Silicon Macs";
 
 	let { children } = $props();
 </script>
 
+<svelte:head>
+	<meta name="description" content={description} />
+	<meta property="og:description" content={description} />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content="/banner.png" />
+	<meta property="og:url" content="{page.url.origin}{page.url.pathname}" />
+</svelte:head>
 <div class="page px-3.75 py-2.5">
 	<header class="flex min-h-8.75 items-center justify-between gap-2">
-		<a href={resolve("/")} class="font-caption text-xl font-bold md:text-2xl"
-			>Buckshot Roulette macOS port</a
-		>
+		<a href={resolve("/")} class="font-caption text-xl font-bold md:text-2xl">
+			Buckshot Roulette macOS port
+		</a>
 		<img src={logo} alt="" width="35" height="35" />
 	</header>
 	<nav>
