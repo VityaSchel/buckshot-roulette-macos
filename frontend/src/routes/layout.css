@@ -2,6 +2,7 @@
 
 @theme {
 	--font-caption: "Roboto Mono Variable", monospace;
+	--breakpoint-xs: 30rem;
 }
 
 :root {
@@ -14,6 +15,7 @@ body {
 	justify-content: center;
 	min-height: 100vh;
 	font-family: monospace;
+	overflow-x: hidden;
 }
 
 @supports (min-height: 100dvh) {
@@ -22,74 +24,6 @@ body {
 	}
 }
 
-main {
-	width: 100%;
-	max-width: 754px;
-	border: 1px solid #5c5c5c;
-	border-width: 0 1px;
-	background: linear-gradient(
-		0deg,
-		rgba(0, 0, 0, 1) 0%,
-		rgba(26, 26, 26, 1) 91%,
-		rgba(0, 0, 0, 1) 100%
-	);
-	position: relative;
-}
-
-main::before,
-main::after {
-	content: "";
-	position: absolute;
-	top: 0;
-	width: 100px;
-	height: 100%;
-	background: repeating-linear-gradient(30deg, #000000, #000000 25px, #ffffff 25px, #ffffff 55px);
-	z-index: -1;
-}
-
-main::before {
-	right: 100%;
-	mask-image: linear-gradient(
-		90deg,
-		rgba(0, 0, 0, 0) 25%,
-		rgba(1, 1, 1, 0.3) 85%,
-		rgba(255, 255, 255, 0.2) 98%
-	);
-}
-
-main::after {
-	left: 100%;
-	mask-image: linear-gradient(
-		270deg,
-		rgba(0, 0, 0, 0) 25%,
-		rgba(1, 1, 1, 0.3) 85%,
-		rgba(255, 255, 255, 0.2) 98%
-	);
-}
-
-header {
-	background: linear-gradient(
-		0deg,
-		rgba(0, 0, 0, 1) 0%,
-		rgba(26, 26, 26, 1) 75%,
-		rgba(0, 0, 0, 1) 100%
-	);
-}
-
-header a {
-	text-decoration: none;
-}
-
-nav {
-	margin-top: 9.75px;
-	background: linear-gradient(
-		0deg,
-		rgba(0, 0, 0, 1) 0%,
-		rgba(26, 26, 26, 1) 75%,
-		rgba(0, 0, 0, 1) 100%
-	);
-	font-size: 13px;
-}
 
 hr {
 	border-top: 1px dotted white;
@@ -102,8 +36,11 @@ a {
 }
 
 h1 {
-	font-size: 20px;
 	margin-bottom: 15px;
 	font-family: var(--font-caption);
 	font-weight: bold;
+}
+
+.pixelated {
+	image-rendering: pixelated;
 }
