@@ -44,6 +44,7 @@
 		font-family: "FakeReceipt-Regular", monospace;
 		background-color: rgba(0, 0, 0, 0.5);
 		backdrop-filter: contrast(0.5) brightness(0.5) saturate(1);
+		overflow-y: auto;
 	}
 	@supports (height: 100dvh) {
 		.alert {

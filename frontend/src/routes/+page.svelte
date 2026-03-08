@@ -66,10 +66,22 @@
 		<img src={screenshot3} alt="The game in macOS Dock" width="300" height="262" />
 	</div>
 </div>
-<Alert id="error-no-license" title="License check failed">
+<Alert id="error-no-license" title="License not found">
 	<p>
 		Ensure you have <a href="https://store.steampowered.com/app/2835570/Buckshot_Roulette/">
 			BUCKSHOT ROULETTE
-		</a> purchased in Steam, your profile is public and your games library is open to everyone
+		</a> purchased in Steam, your profile is public and your games library is open to everyone.
+	</p>
+</Alert>
+<Alert id="error-license-unknown" title="License check failed">
+	<p>
+		Something went wrong while checking the game's license in your Steam library. Ensure your
+		profile is public and your games library is open to everyone.
+	</p>
+</Alert>
+<Alert id="success" title="Welcome">
+	<p>
+		You have been authorized and can now download the port using the "Download for free" button
+		below. If you experience issues, ensure your browser allows cookies or contact port's author.
 	</p>
 </Alert>
