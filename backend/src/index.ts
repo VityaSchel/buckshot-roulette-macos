@@ -10,7 +10,6 @@ const appProtected = new Elysia({
 		'/download',
 		async ({ cookie: { license }, redirect, set, headers }) => {
 			const token = license!.value;
-			console.log(license.secrets);
 			if (!token || token.expiresAt <= Date.now()) {
 				return redirect(new URL('auth', PUBLIC_API_URL).href);
 			}
