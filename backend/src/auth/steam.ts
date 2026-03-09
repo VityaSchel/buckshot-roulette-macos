@@ -11,13 +11,9 @@ export const appAuthSteam = new Elysia({
 	cookie: authCookie,
 })
 	.use(licenseMacro)
-	.get('/', async ({ redirect, query }) => {
-		let returnTo = new URL('auth/steam/callback', PUBLIC_API_URL).href;
-		if (query.file) {
-			returnTo += '?' + new URLSearchParams({ file: query.file });
-		}
+	.get('/', async ({ redirect }) => {
 		const redirectUrl = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(
-			returnTo,
+			new URL('auth/steam/callback', PUBLIC_API_URL).href,
 		)}&openid.realm=${PUBLIC_API_URL}&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select`;
 		return redirect(redirectUrl);
 	})
