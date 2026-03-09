@@ -1,9 +1,9 @@
 import z from 'zod';
 import Elysia from 'elysia';
 import { PUBLIC_API_URL } from '../env';
+import { authCookie, authCookieSchema } from '.';
 import { fieldsToZodObject } from '../utils';
 import { checkSteamLicense } from '../license-check/steam';
-import { authCookie, authCookieSchema } from '.';
 
 export const appAuthSteam = new Elysia({
 	prefix: '/steam',

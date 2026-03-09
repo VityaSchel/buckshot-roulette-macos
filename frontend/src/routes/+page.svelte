@@ -4,7 +4,7 @@
 	import screenshot1 from "$lib/assets/screenshot-1.avif";
 	import screenshot2 from "$lib/assets/screenshot-2.avif";
 	import screenshot3 from "$lib/assets/screenshot-3.avif";
-	import Alert from "$lib/ui/Alert.svelte";
+	import Alert from "$lib/ui/Modal.svelte";
 	import Button from "$lib/ui/Button.svelte";
 </script>
 
