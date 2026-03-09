@@ -23,7 +23,7 @@ body {
 	font-family: monospace;
 }
 
-body:has(.alert:target) {
+html:has(.alert:target) {
 	overflow-y: hidden;
 }
 

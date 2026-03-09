@@ -1,4 +1,6 @@
-<script>
+<script lang="ts">
+	import Modal from "./Modal.svelte";
+
 	let {
 		title,
 		children,
@@ -8,10 +10,12 @@
 		children?: import("svelte").Snippet;
 		id: string;
 	} = $props();
-
-	const uid = $props.id();
-
-	import Modal from "./Modal.svelte";
 </script>
 
-<Modal></Modal>
+<Modal {title} {id}>
+	{@render children?.()}
+	{#snippet buttons()}
+		<!-- svelte-ignore a11y_invalid_attribute -->
+		<a href="#" class="no-underline!">Close</a>
+	{/snippet}
+</Modal>

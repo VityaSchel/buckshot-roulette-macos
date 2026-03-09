@@ -1,14 +1,16 @@
 import z from 'zod';
 import Elysia from 'elysia';
 import { PUBLIC_API_URL } from '../env';
-import { authCookie, authCookieSchema } from '.';
+import { authCookie, authCookieSchema } from './cookie';
 import { fieldsToZodObject } from '../utils';
+import { licenseMacro } from '../license-check';
 import { checkSteamLicense } from '../license-check/steam';
 
 export const appAuthSteam = new Elysia({
 	prefix: '/steam',
 	cookie: authCookie,
 })
+	.use(licenseMacro)
 	.get('/', async ({ redirect, query }) => {
 		let returnTo = new URL('auth/steam/callback', PUBLIC_API_URL).href;
 		if (query.file) {
@@ -126,5 +128,6 @@ export const appAuthSteam = new Elysia({
 		},
 		{
 			cookie: authCookieSchema,
+			checkLicense: true,
 		},
 	);

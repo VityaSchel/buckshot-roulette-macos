@@ -1,6 +1,7 @@
 import { Elysia, redirect } from 'elysia';
 import { PUBLIC_URL } from './env';
-import { appAuth, authCookie, authCookieSchema } from './auth';
+import { appAuth } from './auth';
+import { authCookie, authCookieSchema } from './auth/cookie';
 
 const appProtected = new Elysia({
 	cookie: authCookie,

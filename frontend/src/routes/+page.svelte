@@ -4,8 +4,9 @@
 	import screenshot1 from "$lib/assets/screenshot-1.avif";
 	import screenshot2 from "$lib/assets/screenshot-2.avif";
 	import screenshot3 from "$lib/assets/screenshot-3.avif";
-	import Alert from "$lib/ui/Modal.svelte";
+	import Alert from "$lib/ui/Alert.svelte";
 	import Button from "$lib/ui/Button.svelte";
+	import Modal from "$lib/ui/Modal.svelte";
 </script>
 
 <svelte:head>
@@ -91,3 +92,12 @@
 		Your Session was invalid so it was deleted. Please click the "Download for free" button again.
 	</p>
 </Alert>
+<Modal id="auth" title="License verification">
+	<p>You must sign in with either Steam or itch.io to prove you have purchased Buckshot Roulette</p>
+	{#snippet buttons()}
+		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+		<a href={new URL("auth/steam", PUBLIC_API_URL).href} class="no-underline!">Steam</a>
+		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+		<a href={new URL("auth/itch.io", PUBLIC_API_URL).href} class="no-underline!">itch.io</a>
+	{/snippet}
+</Modal>

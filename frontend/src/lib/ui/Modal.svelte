@@ -1,12 +1,14 @@
 <script lang="ts">
 	let {
 		title,
-		children,
 		id,
+		children,
+		buttons,
 	}: {
 		title: string;
-		children?: import("svelte").Snippet;
 		id: string;
+		children?: import("svelte").Snippet;
+		buttons?: import("svelte").Snippet;
 	} = $props();
 
 	const uid = $props.id();
@@ -23,9 +25,8 @@
 		<div id="alert-desc-{uid}" class="alert-desc my-4">
 			{@render children?.()}
 		</div>
-		<div class="mt-2 flex items-center justify-center text-5xl">
-			<!-- svelte-ignore a11y_invalid_attribute -->
-			<a href="#" class="no-underline!">Close</a>
+		<div class="mt-2 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-5xl">
+			{@render buttons?.()}
 		</div>
 	</div>
 </div>
@@ -61,6 +62,7 @@
 		padding: 32px;
 		background-color: black;
 		border: 1px dotted white;
+		overflow-x: hidden;
 	}
 	h2 {
 		display: inline-block;
