@@ -5,6 +5,12 @@
 	--breakpoint-xs: 30rem;
 }
 
+html,
+body {
+	overflow-x: hidden;
+	max-width: 100%;
+}
+
 :root {
 	background-color: black;
 	color: gainsboro;
@@ -15,7 +21,6 @@ body {
 	justify-content: center;
 	min-height: 100vh;
 	font-family: monospace;
-	overflow-x: hidden;
 }
 
 body:has(.alert:target) {
