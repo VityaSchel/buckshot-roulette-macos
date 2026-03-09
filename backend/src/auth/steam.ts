@@ -1,34 +1,16 @@
-import Elysia, { t } from 'elysia';
-import { JWT_SECRET, PUBLIC_API_URL, PUBLIC_URL } from './env';
-import { fieldsToZodObject } from './utils';
 import z from 'zod';
-import {
-	CACHE_CHECK_TRUE_LIFETIME_MS,
-	checkSteamLicense,
-} from './license-check';
+import Elysia from 'elysia';
+import { PUBLIC_API_URL } from '../env';
+import { fieldsToZodObject } from '../utils';
+import { checkSteamLicense } from '../license-check/steam';
+import { authCookie, authCookieSchema } from '.';
 
-export const authCookie = {
-	secrets: JWT_SECRET,
-	sign: ['license'],
-};
-
-export const authCookieSchema = t.Cookie(
-	{
-		license: t.Optional(
-			t.Object({
-				expiresAt: t.Numeric(),
-			}),
-		),
-	},
-	authCookie,
-);
-
-export const appAuth = new Elysia({
-	prefix: '/auth',
+export const appAuthSteam = new Elysia({
+	prefix: '/steam',
 	cookie: authCookie,
 })
 	.get('/', async ({ redirect, query }) => {
-		let returnTo = new URL('auth/callback', PUBLIC_API_URL).href;
+		let returnTo = new URL('auth/steam/callback', PUBLIC_API_URL).href;
 		if (query.file) {
 			returnTo += '?' + new URLSearchParams({ file: query.file });
 		}
@@ -39,7 +21,7 @@ export const appAuth = new Elysia({
 	})
 	.get(
 		'/callback',
-		async ({ redirect, set, query, cookie: { license } }) => {
+		async ({ set, query }) => {
 			let steamId: string | null;
 			try {
 				const STEAM_AUTH_FIELDS = [
@@ -140,27 +122,7 @@ export const appAuth = new Elysia({
 				};
 			}
 
-			try {
-				if (licenseCheckResult === true) {
-					license!.value = {
-						expiresAt: Date.now() + CACHE_CHECK_TRUE_LIFETIME_MS,
-					};
-					license!.httpOnly = true;
-					license!.maxAge = Math.floor(CACHE_CHECK_TRUE_LIFETIME_MS / 1000);
-					return redirect(new URL('#success', PUBLIC_URL).href);
-				} else if (licenseCheckResult === 'unknown') {
-					return redirect(new URL('#error-license-unknown', PUBLIC_URL).href);
-				} else {
-					return redirect(new URL('#error-no-license', PUBLIC_URL).href);
-				}
-			} catch (error) {
-				console.error(error);
-				set.status = 500;
-				return {
-					ok: false,
-					error: 'Internal server error',
-				};
-			}
+			return licenseCheckResult;
 		},
 		{
 			cookie: authCookieSchema,

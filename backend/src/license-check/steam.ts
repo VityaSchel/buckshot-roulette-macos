@@ -1,15 +1,13 @@
 import z from 'zod';
-import { STEAM_API_KEY } from './env';
+import { STEAM_API_KEY } from '../env';
+import { CACHE_CHECK_FALSE_LIFETIME_MS, CACHE_CHECK_TRUE_LIFETIME_MS } from '.';
 
-const BUCKSHOT_ROULETTE_APP_ID = 2835570;
+const BUCKSHOT_ROULETTE_STEAM_APP_ID = 2835570;
 
-const licenseCheckCache = new Map<
+const steamLicenseCheckCache = new Map<
 	string,
 	{ expiresAt: number; result: boolean }
 >();
-
-export const CACHE_CHECK_TRUE_LIFETIME_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
-export const CACHE_CHECK_FALSE_LIFETIME_MS = 1000 * 60; // 1 minute
 
 export async function checkSteamLicense({
 	steamId,
@@ -18,7 +16,7 @@ export async function checkSteamLicense({
 }): Promise<boolean | 'unknown'> {
 	if (steamId === '76561198943790498') return true; // for testing purposes
 
-	const cachedResponse = licenseCheckCache.get(steamId);
+	const cachedResponse = steamLicenseCheckCache.get(steamId);
 	if (cachedResponse && cachedResponse.expiresAt > Date.now()) {
 		return cachedResponse.result;
 	}
@@ -28,7 +26,7 @@ export async function checkSteamLicense({
 			result === true
 				? CACHE_CHECK_TRUE_LIFETIME_MS
 				: CACHE_CHECK_FALSE_LIFETIME_MS;
-		licenseCheckCache.set(steamId, {
+		steamLicenseCheckCache.set(steamId, {
 			expiresAt: Date.now() + cacheCheckLifetimeMs,
 			result,
 		});
@@ -48,7 +46,7 @@ async function fetchSteamLicense({
 				key: STEAM_API_KEY,
 				input_json: JSON.stringify({
 					steamid: steamId,
-					appids_filter: [BUCKSHOT_ROULETTE_APP_ID],
+					appids_filter: [BUCKSHOT_ROULETTE_STEAM_APP_ID],
 					include_appinfo: false,
 					include_played_free_games: false,
 				}),
@@ -86,7 +84,7 @@ async function fetchSteamLicense({
 		}
 
 		const result = response.games.some(
-			(game) => game.appid === BUCKSHOT_ROULETTE_APP_ID,
+			(game) => game.appid === BUCKSHOT_ROULETTE_STEAM_APP_ID,
 		);
 
 		return result;

@@ -1,5 +1,5 @@
 import { Elysia, redirect } from 'elysia';
-import { PUBLIC_API_URL, PUBLIC_URL } from './env';
+import { PUBLIC_URL } from './env';
 import { appAuth, authCookie, authCookieSchema } from './auth';
 
 const appProtected = new Elysia({
@@ -11,7 +11,7 @@ const appProtected = new Elysia({
 		async ({ cookie: { license }, redirect }) => {
 			const token = license!.value;
 			if (!token || token.expiresAt <= Date.now()) {
-				return redirect(new URL('auth', PUBLIC_API_URL).href);
+				return redirect(new URL('#auth', PUBLIC_URL).href);
 			}
 
 			return Bun.file(
