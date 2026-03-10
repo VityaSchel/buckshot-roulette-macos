@@ -107,18 +107,7 @@ export const appAuthSteam = new Elysia({
 				};
 			}
 
-			let licenseCheckResult: boolean | 'unknown';
-			try {
-				licenseCheckResult = await checkSteamLicense({ steamId });
-			} catch (e) {
-				console.error(e);
-				set.status = 502;
-				return {
-					ok: false,
-					error:
-						'Failed to verify game license in your Steam library, ensure your profile and your games library are public',
-				};
-			}
+			const licenseCheckResult = await checkSteamLicense({ steamId });
 
 			return licenseCheckResult;
 		},

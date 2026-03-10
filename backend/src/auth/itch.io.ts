@@ -24,38 +24,31 @@ export const appAuthItchIo = new Elysia({
 	})
 	.post(
 		'/callback',
-		async ({ body }) => {
-			const userId = await fetch('https://api.itch.io/profile', {
-				headers: {
-					Authorization: `Bearer ` + body.token,
-				},
-			})
-				.then((res) => res.json())
-				.then(
-					(res) =>
-						z
-							.object({
-								user: z.object({
-									id: z.number().int().nonnegative(),
-								}),
-							})
-							.parse(res).user.id,
-				);
-
-			let licenseCheckResult: boolean | 'unknown';
+		async ({ body: { token } }) => {
 			try {
-				licenseCheckResult = await checkItchIoLicense({ userId });
+				const userId = await fetch('https://api.itch.io/profile', {
+					headers: {
+						Authorization: `Bearer ` + token,
+					},
+				})
+					.then((res) => res.json())
+					.then(
+						(res) =>
+							z
+								.object({
+									user: z.object({
+										id: z.number().int().nonnegative(),
+									}),
+								})
+								.parse(res).user.id,
+					);
+
+				const licenseCheckResult = await checkItchIoLicense({ userId, token });
+				return licenseCheckResult;
 			} catch (e) {
 				console.error(e);
-				set.status = 502;
-				return {
-					ok: false,
-					error:
-						'Failed to verify game license in your Steam library, ensure your profile and your games library are public',
-				};
+				return 'unknown';
 			}
-
-			return licenseCheckResult;
 		},
 		{
 			cookie: authCookieSchema,

@@ -40,57 +40,62 @@ async function fetchSteamLicense({
 	steamId: string;
 }): Promise<boolean | 'unknown'> {
 	if (!STEAM_API_KEY) throw new Error('Missing Steam API key');
-	const responseSerialized = await fetch(
-		'https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?' +
-			new URLSearchParams({
-				key: STEAM_API_KEY,
-				input_json: JSON.stringify({
-					steamid: steamId,
-					appids_filter: [BUCKSHOT_ROULETTE_STEAM_APP_ID],
-					include_appinfo: false,
-					include_played_free_games: false,
+	try {
+		const responseSerialized = await fetch(
+			'https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?' +
+				new URLSearchParams({
+					key: STEAM_API_KEY,
+					input_json: JSON.stringify({
+						steamid: steamId,
+						appids_filter: [BUCKSHOT_ROULETTE_STEAM_APP_ID],
+						include_appinfo: false,
+						include_played_free_games: false,
+					}),
 				}),
-			}),
-	).then((res) => res.text());
+		).then((res) => res.text());
 
-	let responseDeserialized: unknown;
-	try {
-		responseDeserialized = JSON.parse(responseSerialized);
-	} catch {
-		console.error(responseSerialized);
-		throw new Error('Failed to parse Steam API response');
-	}
-
-	try {
-		const response = await z
-			.object({
-				response: z
-					.object({ games: z.array(z.object({ appid: z.number() })) })
-					.or(
-						z.object({
-							game_count: z.number(),
-						}),
-					),
-			})
-			.parseAsync(responseDeserialized)
-			.then((data) => data.response);
-
-		if ('game_count' in response) {
-			if (response.game_count === 0) {
-				return false;
-			} else {
-				throw new Error('Unknown response');
-			}
+		let responseDeserialized: unknown;
+		try {
+			responseDeserialized = JSON.parse(responseSerialized);
+		} catch {
+			console.error(responseSerialized);
+			throw new Error('Failed to parse Steam API response');
 		}
 
-		const result = response.games.some(
-			(game) => game.appid === BUCKSHOT_ROULETTE_STEAM_APP_ID,
-		);
+		try {
+			const response = await z
+				.object({
+					response: z
+						.object({ games: z.array(z.object({ appid: z.number() })) })
+						.or(
+							z.object({
+								game_count: z.number(),
+							}),
+						),
+				})
+				.parseAsync(responseDeserialized)
+				.then((data) => data.response);
 
-		return result;
+			if ('game_count' in response) {
+				if (response.game_count === 0) {
+					return false;
+				} else {
+					throw new Error('Unknown response');
+				}
+			}
+
+			const result = response.games.some(
+				(game) => game.appid === BUCKSHOT_ROULETTE_STEAM_APP_ID,
+			);
+
+			return result;
+		} catch (e) {
+			console.error(e);
+			console.log(responseDeserialized);
+			return 'unknown';
+		}
 	} catch (e) {
 		console.error(e);
-		console.log(responseDeserialized);
 		return 'unknown';
 	}
 }
