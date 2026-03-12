@@ -12,7 +12,7 @@ export const appAuthItchIo = new Elysia({
 	.use(licenseMacro('itch.io'))
 	.get('/', async ({ redirect }) => {
 		const returnTo = new URL('auth/itch.io/callback', PUBLIC_API_URL).href;
-		const redirectUrl = `https://itch.io/user/oauth?client_id=3ebb49fdae8199285348d6bbbbf77af1&scope=profile:owned&response_type=token&redirect_uri=${encodeURIComponent(
+		const redirectUrl = `https://itch.io/user/oauth?client_id=3ebb49fdae8199285348d6bbbbf77af1&scope=profile:owned%20profile:me&response_type=token&redirect_uri=${encodeURIComponent(
 			returnTo,
 		)}`;
 		return redirect(redirectUrl);
