@@ -21,7 +21,7 @@ export async function checkItchIoLicense({
 	if (cachedResponse && cachedResponse.expiresAt > Date.now()) {
 		return cachedResponse.result;
 	}
-	const result = await fetchItchIoLicense({ userId, token });
+	const result = await fetchItchIoLicense({ token });
 	if (result !== 'unknown') {
 		const cacheCheckLifetimeMs =
 			result === true
@@ -36,10 +36,8 @@ export async function checkItchIoLicense({
 }
 
 async function fetchItchIoLicense({
-	userId,
 	token,
 }: {
-	userId: number;
 	token: string;
 }): Promise<boolean | 'unknown'> {
 	try {
@@ -62,8 +60,7 @@ async function fetchItchIoLicense({
 							owned_keys: z.object().or(
 								z.array(
 									z.object({
-										gameId: z.number().int().nonnegative(),
-										ownerId: z.number().int().nonnegative(),
+										game_id: z.number().int().nonnegative(),
 									}),
 								),
 							),
@@ -77,9 +74,7 @@ async function fetchItchIoLicense({
 			if (Array.isArray(page.owned_keys) && page.owned_keys.length > 0) {
 				if (
 					page.owned_keys.some(
-						(k) =>
-							k.gameId === BUCKSHOT_ROULETTE_ITCH_IO_GAME_ID &&
-							k.ownerId === userId,
+						(k) => k.game_id === BUCKSHOT_ROULETTE_ITCH_IO_GAME_ID,
 					)
 				) {
 					return true;
