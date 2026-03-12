@@ -68,17 +68,29 @@
 		<img src={screenshot3} alt="The game in macOS Dock" width="300" height="262" />
 	</div>
 </div>
-<Alert id="error-no-license" title="License not found">
+<Alert id="error-steam-no-license" title="License not found">
 	<p>
 		Ensure you have <a href="https://store.steampowered.com/app/2835570/Buckshot_Roulette/">
 			BUCKSHOT ROULETTE
 		</a> purchased in Steam, your profile is public and your games library is open to everyone.
 	</p>
 </Alert>
-<Alert id="error-license-unknown" title="License check failed">
+<Alert id="error-steam-license-unknown" title="License check failed">
 	<p>
 		Something went wrong while checking the game's license in your Steam library. Ensure your
 		profile is public and your games library is open to everyone.
+	</p>
+</Alert>
+<Alert id="error-itch.io-no-license" title="License not found">
+	<p>
+		Ensure you have <a href="https://mikeklubnika.itch.io/buckshot-roulette"> BUCKSHOT ROULETTE </a> purchased
+		in itch.io.
+	</p>
+</Alert>
+<Alert id="error-itch.io-license-unknown" title="License check failed">
+	<p>
+		Something went wrong while checking the game's license in your itch.io library. Please try again
+		later.
 	</p>
 </Alert>
 <Alert id="success" title="Welcome">
