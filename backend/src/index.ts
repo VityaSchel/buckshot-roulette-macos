@@ -46,6 +46,9 @@ const app = new Elysia()
 	})
 	.use(appProtected);
 
-app.listen(Bun.env.PORT || 3001, ({ hostname, port, protocol }) => {
-	console.log(`Server running on ${protocol}://${hostname}:${port}`);
-});
+app.listen(
+	{ hostname: Bun.env.HOST || '127.0.0.1', port: Bun.env.PORT || 3001 },
+	({ hostname, port, protocol }) => {
+		console.log(`Server running on ${protocol}://${hostname}:${port}`);
+	},
+);
