@@ -1,7 +1,13 @@
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Elysia, redirect } from 'elysia';
 import { PUBLIC_URL } from './env';
 import { appAuth } from './auth';
 import { authCookie, authCookieSchema } from './auth/cookie';
+
+const downloadsDir =
+	Bun.env.DOWNLOADS_DIR ||
+	fileURLToPath(new URL('../../static', import.meta.url));
 
 const appProtected = new Elysia({
 	cookie: authCookie,
@@ -15,12 +21,7 @@ const appProtected = new Elysia({
 				return redirect(new URL('#auth', PUBLIC_URL).href);
 			}
 
-			return Bun.file(
-				new URL(
-					'../../static/buckshot-roulette-macos-v1.2.zip',
-					import.meta.url,
-				),
-			);
+			return Bun.file(join(downloadsDir, 'buckshot-roulette-macos-v1.2.zip'));
 		},
 		{
 			cookie: authCookieSchema,

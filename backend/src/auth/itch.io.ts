@@ -4,6 +4,7 @@ import { PUBLIC_API_URL } from '../env';
 import { authCookie, authCookieSchema } from './cookie';
 import { licenseMacro } from '../license-check';
 import { checkItchIoLicense } from '../license-check/itch.io';
+import callbackHtml from '../static/itch.io-callback.html' with { type: 'text' };
 
 export const appAuthItchIo = new Elysia({
 	prefix: '/itch.io',
@@ -18,9 +19,9 @@ export const appAuthItchIo = new Elysia({
 		return redirect(redirectUrl);
 	})
 	.get('/callback', async () => {
-		return Bun.file(
-			new URL('../static/itch.io-callback.html', import.meta.url),
-		);
+		return new Response(String(callbackHtml), {
+			headers: { 'Content-Type': 'text/html;charset=utf-8' },
+		});
 	})
 	.post(
 		'/callback',
