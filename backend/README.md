@@ -46,13 +46,29 @@ The backend exits with status 1 and names the missing variables. It stops gracef
 | `GET /download` | Sends the zip to a holder of a valid license, with single-range resume |
 | `GET /logout` | Clears the license cookie |
 
+## Layout
+
+`main.go` loads the config and runs the server until SIGTERM. Everything else is in `internal/`:
+
+| Package | Owns |
+| --- | --- |
+| `config` | Environment variables, the URLs built from them, the upstream origins |
+| `server` | Routes, handlers, turning a license check into redirects and the cookie, graceful shutdown |
+| `steam` | OpenID login URL and assertion checks, `check_authentication`, `GetOwnedGames` |
+| `itchio` | OAuth login URL, the callback page, reading the token from the POST body, the owned-keys scan |
+| `license` | The signed `license` cookie and the cache of ownership answers |
+| `download` | The zip, with single-range resume and a per-chunk write deadline |
+| `upstream` | The HTTP client for Steam and itch.io, with its timeouts, redirect policy, size cap and logging |
+| `httpx` | Redirects and JSON errors without extras, panic recovery, the request-body deadline |
+| `compat` | The Bun, Elysia and WHATWG parsing rules the old backend's answers depended on |
+
 ## Tests
 
 ```sh
 go test ./...
 ```
 
-Some tests run the server on a real socket; they listen on a free port in `127.0.0.1:39560-39599`.
+Unit tests sit next to each package. `internal/server` holds the end-to-end tests; some run the server on a real socket and listen on a free port in `127.0.0.1:39560-39599`.
 
 `go build -tags parity` makes a binary for the parity harness. It reads `TEST_STEAM_COMMUNITY_ORIGIN`, `TEST_STEAM_API_ORIGIN` and `TEST_ITCH_API_ORIGIN` so a mock can stand in for Steam and itch.io. Builds without the tag have no such hook.
 
